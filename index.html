@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Report</title>
+    <link rel="icon" href="https://i.pinimg.com/736x/36/4e/3a/364e3a3a4e580522804f20e41fb1c652.jpg" type="image/x-icon" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: linear-gradient(
+          135deg,
+          #ff9a9e,
+          #fad0c4,
+          #fad0c4,
+          #a18cd1,
+          #fbc2eb,
+          #8fd3f4,
+          #84fab0
+        );
+        color: #333;
+        margin: 0;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        color: #fff;
+        font-size: 28px;
+      }
+
+      .search-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      #searchInput {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        outline: none;
+        width: 250px;
+      }
+
+      #searchButton {
+        padding: 10px 15px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        background: #ff6b81;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      #searchButton:hover {
+        background: #e8505b;
+      }
+
+      #weather {
+        border: 1px solid #ddd;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.2);
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: white;
+        text-align: center;
+      }
+
+      .weather-header {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .weather-icon {
+        width: 100px;
+        margin: 10px 0;
+      }
+
+      .weather-details {
+        font-size: 18px;
+        margin: 5px 0;
+      }
+
+      .weather-box {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 15px;
+      }
+
+      .box {
+        width: 45%;
+        padding: 15px;
+        border-radius: 8px;
+        background: #f4f4f4;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Live Weather Report</h1>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Enter country or city..."
+      />
+      <button id="searchButton">Search</button>
+    </div>
+
+    <div id="weather">Enter a location and press Search...</div>
+
+    <script>
+      const apiKey = "6ac91644183445698c0172912251302";
+
+      function weatherData(location) {
+        axios.get(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=no`)
+          .then((res) => {
+            console.log(res);
+            const data = res.data;
+            document.getElementById("weather").innerHTML = `
+              <div class="weather-header">
+                ${data.location.name}, ${data.location.country}
+              </div>
+              <img class="weather-icon" src="${data.current.condition.icon}" alt="Weather Icon">
+              <p class="weather-details">Temperature: <strong>${data.current.temp_c}°C</strong></p>
+              <p class="weather-details">Condition: <strong>${data.current.condition.text}</strong></p>
+
+              <div class="weather-box">
+                <div class="box">
+                  <p class="weather-details">Local Time: <strong>${data.location.localtime}</strong></p>
+                  <p class="weather-details">Humidity: <strong>${data.current.humidity}%</strong></p>
+                </div>
+                <div class="box">
+                  <p class="weather-details">Wind Speed: <strong>${data.current.wind_kph} km/h</strong></p>
+                  <p class="weather-details">Precipitation: <strong>${data.current.precip_mm} mm</strong></p>
+                </div>
+              </div>
+            `;
+          });
+      }
+
+     
+      document.getElementById("searchButton").addEventListener("click", () => {
+        const searchLocation = document.getElementById("searchInput").value;
+        if (searchLocation) {
+          weatherData(searchLocation);
+        } else {
+          alert("Please enter a city or country name.");
+        }
+      });
+    </script>
+  </body>
+</html>
